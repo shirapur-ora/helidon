@@ -51,7 +51,7 @@ class GrpcProxyProducer {
      */
     @GrpcProxy
     @GrpcChannel(name = GrpcChannelsProvider.DEFAULT_CHANNEL_NAME)
-    static Object proxyUsingNamedChannel(InjectionPoint injectionPoint, ChannelProducer producer) {
+    static Object proxyUsingNamedChannel(InjectionPoint injectionPoint, ChannelProducer producer, BeanManager beanManager) {
         Class<?> type = ModelHelper.getGenericType(injectionPoint.getType());
 
         String channelName;
@@ -64,7 +64,7 @@ class GrpcProxyProducer {
         }
 
         Channel channel = producer.findChannel(channelName);
-        GrpcProxyBuilder<?> builder = GrpcProxyBuilder.create(channel, type);
+        GrpcProxyBuilder<?> builder = GrpcProxyBuilder.create(channel, type, beanManager);
 
         return builder.build();
     }
@@ -84,7 +84,7 @@ class GrpcProxyProducer {
     static Object proxyUsingInProcessChannel(InjectionPoint injectionPoint, BeanManager beanManager) {
         Class<?> type = ModelHelper.getGenericType(injectionPoint.getType());
         Channel channel = ChannelProducer.inProcessChannel(beanManager);
-        GrpcProxyBuilder<?> builder = GrpcProxyBuilder.create(channel, type);
+        GrpcProxyBuilder<?> builder = GrpcProxyBuilder.create(channel, type, beanManager);
         return builder.build();
     }
 }
